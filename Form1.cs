@@ -65,9 +65,9 @@ namespace HomeWork1.ADO.NET
 
         private void buttonFill_Click(object sender, EventArgs e)
         {
-            string fillDataBase = @"INSERT INTO Books (Title, Author, PublicationYear, TotalCopies, CopiesInLibrary) VALUES 
-                                ('С++', 'Олег Иванов', 2020, 2000, 10),
-                                ('С', 'Олег Иванов', 2019, 2001, 20),
+            string fillDataBase = @"USE LIBRARY; INSERT INTO Books (Title, Author, PublicationYear, TotalCopies, CopiesInLibrary) VALUES 
+                                ('C++', 'Олег Иванов', 2020, 2000, 10),
+                                ('C', 'Олег Иванов', 2019, 2001, 20),
                                 ('Java', 'Олег Иванов', 2018, 200, 30),
                                 ('JavaScript', 'Олег Иванов', 2017, 1500, 40),
                                 ('PHP', 'Олег Газманов', 2020, 200, 50);";
@@ -102,10 +102,11 @@ namespace HomeWork1.ADO.NET
         private void buttonAuthor_Click(object sender, EventArgs e)
         {
             string authorName = textBox2.Text;
-            string _Expression =
-                @"SELECT COUNT(*) AS TotalBooks
-           FROM Books
-           WHERE Author = @AuthorName;";
+            string _Expression = @"USE Library;
+        SELECT Title, COUNT(*) AS TotalBooks
+        FROM Books
+        WHERE Author LIKE @AuthorName
+        GROUP BY Title;";
 
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
@@ -113,12 +114,27 @@ namespace HomeWork1.ADO.NET
                 SqlCommand command = new SqlCommand(_Expression, connection);
                 command.Parameters.AddWithValue("@AuthorName", authorName);
 
-                using (SqlDataReader _reader = command.ExecuteReader())
+                using (SqlDataReader reader = command.ExecuteReader())
                 {
-                    if (_reader.HasRows && _reader.Read())
+                    if (reader.HasRows)
                     {
-                        object totalBooks = _reader["TotalBooks"];
-                        textBox1.Text =  $"Количество книг автора: {totalBooks.ToString()}";
+                        StringBuilder resultText = new StringBuilder();
+
+                        while (reader.Read())
+                        {
+                            string title = reader["Title"].ToString();
+                            int totalBooks = (int)reader["TotalBooks"];
+                            resultText.AppendLine($"Книга: {title}, Количество: {totalBooks}");
+                        }
+
+                        if (resultText.Length > 0)
+                        {
+                            textBox1.Text = resultText.ToString();
+                        }
+                        else
+                        {
+                            textBox1.Text = "Автор не найден";
+                        }
                     }
                     else
                     {
@@ -131,10 +147,11 @@ namespace HomeWork1.ADO.NET
         private void buttonTitle_Click(object sender, EventArgs e)
         {
             string bookTitle = textBox3.Text;
-            string _Expression =
-                @"SELECT COUNT(*) AS TotalBooks
-                FROM Books
-                WHERE Title = @bookTitle;";
+            string _Expression = @"USE Library;
+        SELECT Author, COUNT(*) AS TotalBooks
+        FROM Books
+        WHERE Title LIKE @bookTitle
+        GROUP BY Author;";
 
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
@@ -142,12 +159,27 @@ namespace HomeWork1.ADO.NET
                 SqlCommand command = new SqlCommand(_Expression, connection);
                 command.Parameters.AddWithValue("@bookTitle", bookTitle);
 
-                using (SqlDataReader _reader = command.ExecuteReader())
+                using (SqlDataReader reader = command.ExecuteReader())
                 {
-                    if (_reader.HasRows && _reader.Read())
+                    if (reader.HasRows)
                     {
-                        object totalBooks = _reader["TotalBooks"];
-                        textBox1.Text = $"Количество книг : {totalBooks.ToString()}";
+                        StringBuilder resultText = new StringBuilder();
+
+                        while (reader.Read())
+                        {
+                            string author = reader["Author"].ToString();
+                            int totalBooks = (int)reader["TotalBooks"];
+                            resultText.AppendLine($"Автор: {author}, Количество: {totalBooks}");
+                        }
+
+                        if (resultText.Length > 0)
+                        {
+                            textBox1.Text = resultText.ToString();
+                        }
+                        else
+                        {
+                            textBox1.Text = "Книги не найдены";
+                        }
                     }
                     else
                     {
@@ -155,7 +187,80 @@ namespace HomeWork1.ADO.NET
                     }
                 }
             }
+        }
 
+        private void buttonMostPopular_Click(object sender, EventArgs e)
+        {
+            string _Expression = @"USE Library;
+        SELECT TOP 10 Title, Author, CopiesInLibrary
+        FROM Books
+        ORDER BY CopiesInLibrary DESC;";
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                SqlCommand command = new SqlCommand(_Expression, connection);
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        StringBuilder resultText = new StringBuilder();
+
+                        while (reader.Read())
+                        {
+                            string title = reader["Title"].ToString();
+                            string author = reader["Author"].ToString();
+                            int copiesInLibrary = (int)reader["CopiesInLibrary"];
+                            resultText.AppendLine($"Книга: {title}, Автор: {author}, Количество в библиотеке: {copiesInLibrary}");
+                        }
+
+                        if (resultText.Length > 0)
+                        {
+                            textBox1.Text = resultText.ToString();
+                        }
+                       
+                    }
+                    
+                }
+            }
+        }
+
+        private void buttonUnPopular_Click(object sender, EventArgs e)
+        {
+            string _Expression = @"USE Library;
+        SELECT TOP 10 Title, Author, CopiesInLibrary
+        FROM Books
+        ORDER BY CopiesInLibrary ASC;";
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                SqlCommand command = new SqlCommand(_Expression, connection);
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        StringBuilder resultText = new StringBuilder();
+
+                        while (reader.Read())
+                        {
+                            string title = reader["Title"].ToString();
+                            string author = reader["Author"].ToString();
+                            int copiesInLibrary = (int)reader["CopiesInLibrary"];
+                            resultText.AppendLine($"Книга: {title}, Автор: {author}, Количество в библиотеке: {copiesInLibrary}");
+                        }
+
+                        if (resultText.Length > 0)
+                        {
+                            textBox1.Text = resultText.ToString();
+                        }
+                       
+                    }
+                   
+                }
+            }
         }
     }
 }

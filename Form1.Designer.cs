@@ -39,6 +39,8 @@
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.buttonMostPopular = new System.Windows.Forms.Button();
+            this.buttonUnPopular = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // tbConnectionString
@@ -143,11 +145,33 @@
             this.label3.TabIndex = 10;
             this.label3.Text = "Напишите название книги";
             // 
+            // buttonMostPopular
+            // 
+            this.buttonMostPopular.Location = new System.Drawing.Point(488, 208);
+            this.buttonMostPopular.Name = "buttonMostPopular";
+            this.buttonMostPopular.Size = new System.Drawing.Size(139, 36);
+            this.buttonMostPopular.TabIndex = 11;
+            this.buttonMostPopular.Text = "ТОП книг по популярности";
+            this.buttonMostPopular.UseVisualStyleBackColor = true;
+            this.buttonMostPopular.Click += new System.EventHandler(this.buttonMostPopular_Click);
+            // 
+            // buttonUnPopular
+            // 
+            this.buttonUnPopular.Location = new System.Drawing.Point(488, 261);
+            this.buttonUnPopular.Name = "buttonUnPopular";
+            this.buttonUnPopular.Size = new System.Drawing.Size(139, 36);
+            this.buttonUnPopular.TabIndex = 12;
+            this.buttonUnPopular.Text = "Непопулярные книги";
+            this.buttonUnPopular.UseVisualStyleBackColor = true;
+            this.buttonUnPopular.Click += new System.EventHandler(this.buttonUnPopular_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(747, 309);
+            this.Controls.Add(this.buttonUnPopular);
+            this.Controls.Add(this.buttonMostPopular);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.textBox3);
@@ -179,6 +203,8 @@
         private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button buttonMostPopular;
+        private System.Windows.Forms.Button buttonUnPopular;
     }
 }
 
